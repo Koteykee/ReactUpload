@@ -1,3 +1,10 @@
+import { Layout } from "../../../components/Layout";
+import { RegistrationForm } from "../components/RegistrationForm";
+
 export const RegistrationPage = () => {
-  return <div></div>;
+  return (
+    <Layout>
+      <RegistrationForm />
+    </Layout>
+  );
 };
