@@ -1,4 +1,4 @@
-import type { IFile, PatchedFile, UploadedFile } from "@/stores/useFileStore";
+import type { IFile, PatchedFile, UploadedFile } from "../stores/useFileStore";
 import { Api } from "./api";
 
 //PUBLIC

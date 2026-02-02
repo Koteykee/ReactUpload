@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { useFileStore, type IFile } from "../../../stores/useFileStore";
 
 interface FileListProps {
   filesList: IFile[];
@@ -14,7 +15,8 @@ export const FileList = ({
   onSelect,
   onUploaded,
 }: FileListProps) => {
-  const { fileStore } = useFileStore();
+  const { fetchUserFilePreview, fetchPublicFilePreview, fetchUploadFile } =
+    useFileStore();
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,8 +30,8 @@ export const FileList = ({
       for (const file of filesList) {
         try {
           const blob = isUserPage
-            ? await fileStore.fetchUserFilePreview(file._id)
-            : await fileStore.fetchPublicFilePreview(file._id);
+            ? await fetchUserFilePreview(file._id)
+            : await fetchPublicFilePreview(file._id);
           if (!blob || cancelled) continue;
 
           const url = URL.createObjectURL(blob);
@@ -51,7 +53,7 @@ export const FileList = ({
       cancelled = true;
       urls.forEach(URL.revokeObjectURL);
     };
-  }, [filesList, isUserPage, fileStore]);
+  }, [filesList, isUserPage]);
 
   const openFileDialog = () => {
     fileInputRef.current?.click();
@@ -62,7 +64,7 @@ export const FileList = ({
     if (!file) return;
 
     try {
-      await fileStore.fetchUploadFile(file);
+      await fetchUploadFile(file);
       toast.success("Added successfully!");
       onUploaded();
       event.target.value = "";
