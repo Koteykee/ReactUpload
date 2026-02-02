@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/useAuthStore";
 
 export const LogoutBtn = () => {
   const { logout } = useAuthStore();
@@ -18,4 +19,3 @@ export const LogoutBtn = () => {
     </button>
   );
 };
-//импорт

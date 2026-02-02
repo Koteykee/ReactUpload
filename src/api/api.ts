@@ -1,7 +1,11 @@
-import axios from "axios";
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 
 import { BACKEND_URL } from "../config/config";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthStore } from "../stores/useAuthStore";
+
+interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 
 export const Api = axios.create({
   baseURL: BACKEND_URL,
@@ -11,12 +15,19 @@ export const Api = axios.create({
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value: string | null) => void;
-  reject: (reason?: any) => void;
+  reject: (reason?: AxiosError) => void;
 }> = [];
 
-const processQueue = (error: unknown, token: string | null = null) => {
+const processQueue = (
+  error: AxiosError | null,
+  token: string | null = null,
+) => {
   failedQueue.forEach((prom) => {
-    error ? prom.reject(error) : prom.resolve(token);
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
   });
   failedQueue = [];
 };
@@ -32,7 +43,8 @@ Api.interceptors.request.use((config) => {
 Api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as AxiosRequestConfigWithRetry;
+    if (!error.config) return Promise.reject(error);
 
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
@@ -42,8 +54,8 @@ Api.interceptors.response.use(
       originalRequest.url?.includes("/auth/refresh") ||
       originalRequest.url?.includes("/auth/login")
     ) {
-      const authStore = useAuthStore();
-      authStore.logout();
+      const { logout } = useAuthStore();
+      logout();
       return Promise.reject(error);
     }
 
@@ -53,6 +65,7 @@ Api.interceptors.response.use(
       })
         .then((token) => {
           if (token) {
+            originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${token}`;
           }
           return Api(originalRequest);
@@ -60,23 +73,29 @@ Api.interceptors.response.use(
         .catch((err) => Promise.reject(err));
     }
 
-    originalRequest._retry = true;
+    if (!originalRequest._retry) {
+      originalRequest._retry = true;
+    }
     isRefreshing = true;
 
-    const authStore = useAuthStore();
+    const { refresh, logout } = useAuthStore();
 
     try {
-      const refreshed = await authStore.refresh();
+      const refreshed = await refresh();
       const newToken = refreshed.accessToken;
 
-      originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      if (originalRequest.headers) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      }
 
       processQueue(null, newToken);
 
       return Api(originalRequest);
-    } catch (refreshError) {
+    } catch (err: unknown) {
+      const refreshError =
+        err instanceof AxiosError ? err : new AxiosError(String(err));
       processQueue(refreshError, null);
-      authStore.logout();
+      logout();
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

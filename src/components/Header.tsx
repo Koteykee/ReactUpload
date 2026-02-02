@@ -1,3 +1,4 @@
+import { useAuthStore } from "../stores/useAuthStore";
 import { LogoutBtn } from "./LogoutBtn";
 import { NavLink } from "./NavLink";
 
@@ -21,4 +22,3 @@ export const Header = () => {
     </nav>
   );
 };
-//импорт

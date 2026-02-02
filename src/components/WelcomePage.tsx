@@ -1,3 +1,4 @@
+import { useAuthStore } from "../stores/useAuthStore";
 import { Layout } from "./Layout";
 
 export const WelcomePage = () => {
@@ -17,4 +18,3 @@ export const WelcomePage = () => {
     </Layout>
   );
 };
-//импорт
