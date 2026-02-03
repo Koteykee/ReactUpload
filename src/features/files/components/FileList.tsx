@@ -6,7 +6,7 @@ interface FileListProps {
   filesList: IFile[];
   isUserPage: boolean;
   onSelect: (file: IFile) => void;
-  onUploaded: () => void;
+  onUploaded?: () => void;
 }
 
 export const FileList = ({
@@ -66,7 +66,7 @@ export const FileList = ({
     try {
       await fetchUploadFile(file);
       toast.success("Added successfully!");
-      onUploaded();
+      onUploaded?.();
       event.target.value = "";
     } catch (err) {
       console.error(err);
