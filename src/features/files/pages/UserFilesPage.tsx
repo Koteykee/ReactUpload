@@ -8,7 +8,7 @@ import { UserFilePreview } from "../components/UserFilePreview";
 
 export const UserFilesPage = () => {
   const [filesList, setFilesList] = useState<IFile[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
   const { fetchUserFiles } = useFileStore();
 
@@ -57,12 +57,12 @@ export const UserFilesPage = () => {
         />
       </div>
       <Modal modelValue={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        {({ close }) =>
+        {() =>
           selectedFile && (
             <UserFilePreview
               file={selectedFile}
-              onClose={close}
               onUploaded={refreshFiles}
+              onClose={() => setIsModalOpen(false)}
             />
           )
         }

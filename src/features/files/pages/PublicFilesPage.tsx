@@ -8,7 +8,7 @@ import { PublicFilePreview } from "../components/PublicFilePreview";
 
 export const PublicFilesPage = () => {
   const [filesList, setFilesList] = useState<IFile[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
   const { fetchPublicFiles } = useFileStore();
 
@@ -43,11 +43,7 @@ export const PublicFilesPage = () => {
         />
       </div>
       <Modal modelValue={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        {({ close }) =>
-          selectedFile && (
-            <PublicFilePreview file={selectedFile} onClose={close} />
-          )
-        }
+        {() => selectedFile && <PublicFilePreview file={selectedFile} />}
       </Modal>
     </Layout>
   );
