@@ -86,9 +86,9 @@ export const UserFilePreview = ({
         <Infoblock
           file={file}
           editable={true}
-          is-editing={isEditing}
+          isEditing={isEditing}
           onUpdated={onUploaded}
-          onClose-edit={() => setIsEditing(false)}
+          onCloseEdit={() => setIsEditing(false)}
         />
         <div className="flex gap-5 mt-2.5 justify-center">
           <button
