@@ -9,7 +9,7 @@ export const registrationSchema = z
       .min(4, "Password must be at least 4 characters")
       .max(30, "Password must be at most 30 characters")
       .nonempty("Password is required"),
-    confirmPassword: z.string().trim(),
+    confirmPassword: z.string().trim().nonempty("Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

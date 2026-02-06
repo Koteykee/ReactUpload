@@ -9,7 +9,12 @@ interface PublicFilePreviewProps {
 
 export const PublicFilePreview = ({ file }: PublicFilePreviewProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [currentFile, setCurrentFile] = useState<IFile>(file);
   const { fetchPublicFilePreview, fetchDownloadFile } = useFileStore();
+
+  useEffect(() => {
+    setCurrentFile(file);
+  }, [file]);
 
   useEffect(() => {
     let url: string | null = null;
@@ -33,11 +38,16 @@ export const PublicFilePreview = ({ file }: PublicFilePreviewProps) => {
         URL.revokeObjectURL(url);
       }
     };
-  }, [file._id]);
+  }, [currentFile._id]);
 
   const downloadFile = async (id: string, filename: string) => {
     try {
       await fetchDownloadFile(id, filename);
+
+      setCurrentFile((prev) => ({
+        ...prev,
+        downloads: prev.downloads + 1,
+      }));
     } catch (err) {
       console.error("Unable to download file:", err);
     }
@@ -46,7 +56,7 @@ export const PublicFilePreview = ({ file }: PublicFilePreviewProps) => {
   return (
     <div className="flex flex-col items-center justify-center text-center gap-5 flex-1">
       {imageUrl && <img src={imageUrl} alt="Picture" className="max-w-full" />}
-      <Infoblock file={file} />
+      <Infoblock file={currentFile} />
       <button
         onClick={() => downloadFile(file._id, file.originalname)}
         className="p-2.5 border-0 rounded-md text-[15px] cursor-pointer hover:brightness-90 bg-[#78bb8f]"

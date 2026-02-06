@@ -16,7 +16,8 @@ export const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
-    mode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
   });
 
   const { login } = useAuthStore();
@@ -51,7 +52,7 @@ export const LoginForm = () => {
     }
   };
 
-  const isDisabled = isSubmitting || Object.keys(errors).length > 0;
+  const isDisabled = isSubmitting;
 
   return (
     <div className="my-5 mx-auto w-full max-w-xl">

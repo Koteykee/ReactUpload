@@ -39,7 +39,7 @@ export interface PatchedFile {
   path: string;
   mimetype: string;
   size: number;
-  isPublic: boolean;
+  isPublic: string;
   downloads: number;
   createdAt: string;
   updatedAt: string;

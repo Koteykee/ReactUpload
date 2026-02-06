@@ -17,15 +17,20 @@ export const UserFilePreview = ({
 }: UserFilePreviewProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [currentFile, setCurrentFile] = useState<IFile>(file);
   const { fetchUserFilePreview, fetchDownloadFile, fetchDeleteFile } =
     useFileStore();
+
+  useEffect(() => {
+    setCurrentFile(file);
+  }, [file]);
 
   useEffect(() => {
     let url: string | null = null;
 
     const loadPreview = async () => {
       try {
-        const blob = await fetchUserFilePreview(file._id);
+        const blob = await fetchUserFilePreview(currentFile._id);
         if (blob) {
           url = URL.createObjectURL(blob);
           setImageUrl(url);
@@ -42,7 +47,7 @@ export const UserFilePreview = ({
         URL.revokeObjectURL(url);
       }
     };
-  }, [file._id]);
+  }, [currentFile._id]);
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -51,6 +56,11 @@ export const UserFilePreview = ({
   const downloadFile = async (id: string, filename: string) => {
     try {
       await fetchDownloadFile(id, filename);
+
+      setCurrentFile((prev) => ({
+        ...prev,
+        downloads: prev.downloads + 1,
+      }));
     } catch (err) {
       console.error("Unable to download file:", err);
     }
@@ -84,7 +94,8 @@ export const UserFilePreview = ({
       )}
       <div className="shrink-0">
         <Infoblock
-          file={file}
+          key={`${currentFile._id}-${isEditing}`}
+          file={currentFile}
           editable={true}
           isEditing={isEditing}
           onUpdated={onUploaded}
@@ -98,13 +109,15 @@ export const UserFilePreview = ({
             {isEditing ? "Cancel" : "Edit file"}
           </button>
           <button
-            onClick={() => downloadFile(file._id, file.originalname)}
+            onClick={() =>
+              downloadFile(currentFile._id, currentFile.originalname)
+            }
             className="p-2.5 border-0 rounded-md text-[15px] cursor-pointer hover:brightness-90 bg-[#78bb8f]"
           >
             Download file
           </button>
           <button
-            onClick={() => deleteFile(file._id)}
+            onClick={() => deleteFile(currentFile._id)}
             className="p-2.5 border-0 rounded-md text-[15px] cursor-pointer hover:brightness-90 bg-[#d37575]"
           >
             Delete file

@@ -33,7 +33,7 @@ export const Infoblock = ({
     mode: "onChange",
     defaultValues: {
       name: file.originalname,
-      isPublic: file.isPublic,
+      isPublic: file.isPublic ? "true" : "false",
     },
   });
 
@@ -42,7 +42,7 @@ export const Infoblock = ({
   useEffect(() => {
     reset({
       name: file.originalname,
-      isPublic: file.isPublic,
+      isPublic: file.isPublic ? "false" : "true",
     });
   }, [file, reset]);
 
@@ -68,11 +68,13 @@ export const Infoblock = ({
   const onSubmit = async (values: EditSchemaType) => {
     const payload: PatchFile = {};
 
+    const isPublicBoolean = values.isPublic === "true" ? false : true;
+
     if (values.name !== file.originalname) {
       payload.originalname = values.name;
     }
-    if (values.isPublic !== file.isPublic) {
-      payload.isPublic = values.isPublic;
+    if (isPublicBoolean !== file.isPublic) {
+      payload.isPublic = isPublicBoolean;
     }
 
     if (Object.keys(payload).length > 0) {
@@ -107,9 +109,7 @@ export const Infoblock = ({
           <div>
             <label htmlFor="public">Private: </label>
             <select
-              {...register("isPublic", {
-                setValueAs: (value) => value === "true",
-              })}
+              {...register("isPublic")}
               id="public"
               className="p-1 my-1 cursor-pointer bg-white border"
             >

@@ -7,7 +7,7 @@ export const editSchema = z.object({
     .min(1, "Name can't be empty")
     .max(30, "Name is too long")
     .nonempty("This field is required"),
-  isPublic: z.boolean().refine((val) => val !== undefined, {
+  isPublic: z.enum(["true", "false"]).refine((val) => val !== undefined, {
     message: "This field is required",
   }),
 });

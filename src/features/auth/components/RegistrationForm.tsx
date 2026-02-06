@@ -21,6 +21,7 @@ export const RegistrationForm = () => {
   } = useForm<RegistrationSchemaType>({
     resolver: zodResolver(registrationSchema),
     mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const { register } = useAuthStore();
@@ -56,7 +57,7 @@ export const RegistrationForm = () => {
     }
   };
 
-  const isDisabled = isSubmitting || Object.keys(errors).length > 0;
+  const isDisabled = isSubmitting;
 
   return (
     <div className="my-5 mx-auto w-full max-w-xl">

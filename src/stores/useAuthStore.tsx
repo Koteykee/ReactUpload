@@ -62,9 +62,9 @@ export const useAuthStore = create<AuthStore>()(
       login: async (values: LoginSchemaType) => {
         try {
           const data = await loginUser(values);
-          set((state) => {
-            state.setToken(data.accessToken);
-            return state;
+          set({
+            accessToken: data.accessToken,
+            user: decodeToken(data.accessToken),
           });
         } catch (err) {
           console.log(err);

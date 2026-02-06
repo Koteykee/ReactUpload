@@ -33,7 +33,7 @@ const processQueue = (
 };
 
 Api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = useAuthStore.getState().accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -75,7 +75,10 @@ Api.interceptors.response.use(
 
     if (!originalRequest._retry) {
       originalRequest._retry = true;
+    } else {
+      return Promise.reject(error);
     }
+
     isRefreshing = true;
 
     const { refresh, logout } = useAuthStore();
