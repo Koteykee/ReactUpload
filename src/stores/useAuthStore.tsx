@@ -14,8 +14,9 @@ export interface DecodedToken {
 interface AuthStore {
   user: DecodedToken | null;
   accessToken: string | null;
+  isManualLogout: boolean;
 
-  logout: () => void;
+  logout: (manual?: boolean) => void;
   setToken: (newToken: string) => void;
   login: (values: LoginSchemaType) => Promise<void>;
   register: (values: RegistrationSchemaType) => Promise<{ message: string }>;
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       user: null,
       accessToken: null,
+      isManualLogout: false,
 
       setToken: (newToken: string) => {
         const decoded = decodeToken(newToken);
@@ -52,10 +54,11 @@ export const useAuthStore = create<AuthStore>()(
         });
       },
 
-      logout: () => {
+      logout: (manual = false) => {
         set({
           user: null,
           accessToken: null,
+          isManualLogout: manual,
         });
       },
 

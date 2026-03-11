@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "../../../stores/useAuthStore";
 import { loginSchema, type LoginSchemaType } from "../validation/login.schema";
 import { FormField } from "../../../components/FormField";
+import toast from "react-hot-toast";
 
 export const LoginForm = () => {
   const {
@@ -20,9 +21,26 @@ export const LoginForm = () => {
     reValidateMode: "onChange",
   });
 
-  const { login } = useAuthStore();
+  const { login, logout, isManualLogout } = useAuthStore();
   const [error, setGlobalError] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const processed = useRef(false);
+
+  useEffect(() => {
+    if (processed.current) return;
+    processed.current = true;
+
+    const reason = location.state?.reason;
+    const from = location.state?.from;
+
+    if (reason === "auth_required" && from && !isManualLogout) {
+      toast.error("Необходимо авторизоваться");
+    }
+
+    navigate(location.pathname, { replace: true, state: {} });
+    if (isManualLogout) logout(false);
+  }, [location, navigate, isManualLogout, logout]);
 
   const onLogin = async (values: LoginSchemaType) => {
     setGlobalError("");

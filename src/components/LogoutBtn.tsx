@@ -6,8 +6,8 @@ export const LogoutBtn = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    logout(true);
+    navigate("/", { replace: true, state: {} });
   };
 
   return (

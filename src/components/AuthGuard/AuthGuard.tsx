@@ -1,12 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
-import toast from "react-hot-toast";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export function AuthGuard() {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const location = useLocation();
 
   if (!accessToken) {
-    toast.error("Необходимо авторизоваться");
-    return <Navigate to="/" replace />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{ reason: "auth_required", from: location.pathname }}
+      />
+    );
   }
 
   return <Outlet />;
