@@ -1,75 +1,26 @@
-# React + TypeScript + Vite
+## Description
+A pre-existing backend providing REST API endpoints was used as the foundation for this project. Based on this API, I built the frontend using React + TS + TailwindCSS.<br>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+As a result the Upload App is a secure and modern web application that allows authenticated users to upload, store, manage and share files.
 
-Currently, two official plugins are available:
+Link to the original project: https://github.com/dmknpd/UP-load
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key Functionalities
+🔐 Secure authentication with JWT (access tokens in state, refresh tokens in HTTP-only cookies) and automatic token renewal handled by an API interceptor<br>
+📂 File uploads with public/private visibility<br>
+📥 Secure file downloading with access restrictions based on file visibility<br>
+🧾 Real-time preview and file detail management<br>
 
-## React Compiler
+## What I Learned
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Building reusable and universal components
+- Applying a feature-based architecture
+- Implementing automatic token refreshing
+- Handling file upload and download functionality
 
-Note: This will impact Vite dev & build performances.
+## Skills Strengthened
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Using Zod and React-hook-form for validation 
+- Styling with TailwindCSS
+- Maintaining a unified and consistent UI
+- Working with forms and React-hot-toast
